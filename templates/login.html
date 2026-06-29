@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI MCQ Generator</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <h1>AI MCQ Generator</h1>
+        <p>Smart Examination System</p>
+
+        <form action="/login" method="POST">
+
+            <label>User Name:</label>
+            <input type="text" name="username" placeholder="Enter your name" required>
+
+            <br><label>User ID:</label>
+            <input type="text" name="userid" placeholder="Enter your ID" required>
+
+            <br><label>Password:</label>
+            <input type="password" name="password" placeholder="Enter your password" required>
+
+            <br><label>Select Role:</label>
+
+            <select name="role" required>
+                <option value="">-- Select Role --</option>
+                <option value="Student">Student</option>
+                <option value="Teacher">Teacher</option>
+                <option value="Principal">Principal</option>
+            </select>
+
+            <br><button type="submit">Login</button>
+
+        </form>
+
+    </div>
+
+</body>
+
+</html>
