@@ -6,7 +6,8 @@ def generate_mcqs(sentences, keywords, count, difficulty="Low"):
 
     sentences = [
         s for s in sentences
-        if len(s.split()) > 6 and len(s.split()) < 40
+        if len(s.split()) > 6
+        and len(s.split()) < 40
         and "include" not in s.lower()
         and "printf" not in s.lower()
         and "void" not in s.lower()
@@ -21,18 +22,16 @@ def generate_mcqs(sentences, keywords, count, difficulty="Low"):
 
                 question = sentence.replace(keyword, "_____")
 
-                options = [keyword]
-
                 distractors = [k for k in keywords if k != keyword]
 
-                if difficulty == "Low":
-                    options += random.sample(distractors, min(2, len(distractors)))
+                random.shuffle(distractors)
 
-                elif difficulty == "Medium":
-                    options += random.sample(distractors, min(3, len(distractors)))
+                # Always keep 4 options
+                options = [keyword]
 
-                else:
-                    options += random.sample(distractors, min(3, len(distractors)))
+                options += distractors[:3]
+
+                while len(options) < 4:
                     options.append("None of the above")
 
                 random.shuffle(options)

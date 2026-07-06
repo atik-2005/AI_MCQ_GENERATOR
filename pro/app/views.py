@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.core.files.storage import FileSystemStorage
-import fitz
 from django.http import HttpResponse
+from reportlab.pdfgen import canvas
+import fitz
+
 from app.ai_engine.preprocess import (
     clean_text,
     sentence_split,
@@ -56,10 +58,61 @@ def home(request):
                 keywords,
                 int(mcq_count),
                 difficulty
-)
+            )
+
+            # Save generated MCQs in session
+            request.session["mcqs"] = mcqs
 
     return render(request, "home.html", {
         "mcqs": mcqs
     })
+
+
 def download(request):
-    return HttpResponse("Download working fine!")
+
+    mcqs = request.session.get("mcqs")
+
+    if not mcqs:
+        return HttpResponse("No MCQs Generated Yet!")
+
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = 'attachment; filename="Generated_MCQs.pdf"'
+
+    pdf = canvas.Canvas(response)
+
+    pdf.setFont("Helvetica-Bold", 18)
+    pdf.drawString(170, 800, "AI Generated MCQs")
+
+    y = 760
+    pdf.setFont("Helvetica", 12)
+
+    for i, mcq in enumerate(mcqs, start=1):
+
+        if y < 120:
+            pdf.showPage()
+            pdf.setFont("Helvetica", 12)
+            y = 800
+
+        options = mcq.get("options", [])
+
+        while len(options) < 4:
+            options.append("")
+
+        pdf.drawString(40, y, f"{i}. {mcq['question']}")
+        y -= 20
+
+        pdf.drawString(60, y, f"A. {options[0]}")
+        y -= 20
+
+        pdf.drawString(60, y, f"B. {options[1]}")
+        y -= 20
+
+        pdf.drawString(60, y, f"C. {options[2]}")
+        y -= 20
+
+        pdf.drawString(60, y, f"D. {options[3]}")
+        y -= 40
+
+    pdf.save()
+
+    return response
