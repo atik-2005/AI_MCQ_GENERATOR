@@ -1,28 +1,19 @@
 import random
 
-def generate_mcqs(sentences, keywords, count=10):
+def generate_mcqs(sentences, keywords, count, difficulty="Low"):
 
     mcqs = []
 
-    # Sirf achhe sentences lo
-    valid_sentences = []
+    sentences = [
+        s for s in sentences
+        if len(s.split()) > 6 and len(s.split()) < 40
+        and "include" not in s.lower()
+        and "printf" not in s.lower()
+        and "void" not in s.lower()
+        and "main" not in s.lower()
+    ]
 
-    for s in sentences:
-        s = s.strip()
-
-        if (
-            len(s.split()) >= 8
-            and len(s.split()) <= 35
-            and "include" not in s.lower()
-            and "printf" not in s.lower()
-            and "void" not in s.lower()
-            and "main" not in s.lower()
-            and "{" not in s
-            and "}" not in s
-        ):
-            valid_sentences.append(s)
-
-    for sentence in valid_sentences:
+    for sentence in sentences:
 
         for keyword in keywords:
 
@@ -34,8 +25,15 @@ def generate_mcqs(sentences, keywords, count=10):
 
                 distractors = [k for k in keywords if k != keyword]
 
-                if len(distractors) >= 3:
-                    options.extend(random.sample(distractors, 3))
+                if difficulty == "Low":
+                    options += random.sample(distractors, min(2, len(distractors)))
+
+                elif difficulty == "Medium":
+                    options += random.sample(distractors, min(3, len(distractors)))
+
+                else:
+                    options += random.sample(distractors, min(3, len(distractors)))
+                    options.append("None of the above")
 
                 random.shuffle(options)
 

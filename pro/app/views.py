@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.core.files.storage import FileSystemStorage
 import fitz
-
+from django.http import HttpResponse
 from app.ai_engine.preprocess import (
     clean_text,
     sentence_split,
@@ -54,9 +54,12 @@ def home(request):
             mcqs = generate_mcqs(
                 sentences,
                 keywords,
-                int(mcq_count)
-            )
+                int(mcq_count),
+                difficulty
+)
 
     return render(request, "home.html", {
         "mcqs": mcqs
     })
+def download(request):
+    return HttpResponse("Download working fine!")

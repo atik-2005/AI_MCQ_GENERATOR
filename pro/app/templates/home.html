@@ -124,6 +124,10 @@
         </button>
 
     </form>
+    <form action="/download" method="POST">
+        {% csrf_token %}
+        <button type="submit">Download PDF</button>
+    </form>
 
     {% if mcqs %}
 
