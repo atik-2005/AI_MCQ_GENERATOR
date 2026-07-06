@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCQGen Pro</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial,sans-serif;
+        }
+
+        body{
+            background:#f4f6f9;
+        }
+
+        .container{
+            width:700px;
+            margin:50px auto;
+            background:white;
+            padding:30px;
+            border-radius:10px;
+            box-shadow:0 0 10px rgba(0,0,0,.2);
+        }
+
+        h1{
+            text-align:center;
+            margin-bottom:25px;
+        }
+
+        label{
+            display:block;
+            margin-top:15px;
+            font-weight:bold;
+        }
+
+        input,select{
+            width:100%;
+            padding:10px;
+            margin-top:8px;
+            border:1px solid #ccc;
+            border-radius:5px;
+        }
+
+        button{
+            width:100%;
+            padding:12px;
+            margin-top:20px;
+            background:#007BFF;
+            color:white;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
+            font-size:16px;
+        }
+
+        button:hover{
+            background:#0056b3;
+        }
+
+        hr{
+            margin:30px 0;
+        }
+
+        .mcq{
+            margin-bottom:30px;
+            padding:20px;
+            border:1px solid #ddd;
+            border-radius:8px;
+            background:#fafafa;
+        }
+
+        .option{
+            margin:8px 0;
+        }
+
+        .answer{
+            color:green;
+            font-weight:bold;
+            margin-top:10px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>MCQGen Pro</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        <label>Upload PDF</label>
+
+        <input type="file" name="pdf_file" accept=".pdf" required>
+
+        <label>Select Difficulty</label>
+
+        <select name="difficulty">
+            <option>Low</option>
+            <option>Medium</option>
+            <option>High</option>
+        </select>
+
+        <label>Number of MCQs</label>
+
+        <select name="mcq_count">
+            <option>10</option>
+            <option>20</option>
+            <option>30</option>
+            <option>50</option>
+        </select>
+
+        <button type="submit">
+            Generate MCQs
+        </button>
+
+    </form>
+
+    {% if mcqs %}
+
+    <hr>
+
+    <h2>Generated MCQs</h2>
+
+    {% for mcq in mcqs %}
+
+    <div class="mcq">
+
+        <h3>Question {{ forloop.counter }}</h3>
+
+        <p>{{ mcq.question }}</p>
+
+        <div class="option">A. {{ mcq.options.0 }}</div>
+        <div class="option">B. {{ mcq.options.1 }}</div>
+        <div class="option">C. {{ mcq.options.2 }}</div>
+        <div class="option">D. {{ mcq.options.3 }}</div>
+
+        <div class="answer">
+            Answer : {{ mcq.answer }}
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>
