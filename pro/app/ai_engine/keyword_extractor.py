@@ -1,19 +1,24 @@
-kw_model = None
+from collections import Counter
+import re
 
+STOP_WORDS = {
+    "the", "is", "are", "was", "were", "a", "an", "and", "or",
+    "of", "to", "in", "on", "for", "with", "by", "from", "as",
+    "at", "this", "that", "these", "those", "it", "its", "be",
+    "been", "being", "has", "have", "had", "can", "will", "would",
+    "should", "could", "about", "into", "than", "then", "their",
+    "there", "they", "them", "we", "you", "your", "he", "she",
+    "his", "her"
+}
 
 def extract_keywords(text, top_n=20):
-    global kw_model
+    words = re.findall(r"\b[a-zA-Z]{3,}\b", text.lower())
 
-    # KeyBERT ko sirf tab import/load karo jab actually keywords chahiye
-    if kw_model is None:
-        from keybert import KeyBERT
-        kw_model = KeyBERT("all-MiniLM-L6-v2")
+    words = [
+        word for word in words
+        if word not in STOP_WORDS
+    ]
 
-    keywords = kw_model.extract_keywords(
-        text,
-        keyphrase_ngram_range=(1, 2),
-        stop_words="english",
-        top_n=top_n
-    )
+    frequency = Counter(words)
 
-    return [keyword for keyword, score in keywords]
+    return [word for word, count in frequency.most_common(top_n)]
