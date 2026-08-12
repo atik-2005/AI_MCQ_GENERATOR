@@ -8,19 +8,9 @@ from pathlib import Path
 # Base Directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY
-SECRET_KEY = os.environ.get(
-    "SECRET_KEY",
-    "django-insecure-%rztpv2+i5*q#j4($k@)kl!vnyoq6djfi8=p1p)h*%hx0!5r*0"
-)
+SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key")
 
-DEBUG = os.environ.get("DEBUG", "True") == "True"
-
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-    ".onrender.com",
-]
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 # Application Definition
 
@@ -106,9 +96,14 @@ STATIC_URL = "/static/"
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-STATICFILES_STORAGE = (
-    "whitenoise.storage.CompressedManifestStaticFilesStorage"
-)
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 # Media Files
 
@@ -119,3 +114,8 @@ MEDIA_ROOT = BASE_DIR / "media"
 # Default Primary Key
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    ".onrender.com",
+]
