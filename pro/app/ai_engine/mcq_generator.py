@@ -10,59 +10,67 @@ def generate_mcqs(
 ):
     excluded_questions = excluded_questions or set()
 
-    sentences = [
-        s for s in sentences
-        if len(s.split()) > 6
-        and len(s.split()) < 40
-        and "include" not in s.lower()
-        and "printf" not in s.lower()
-        and "void" not in s.lower()
-        and "main" not in s.lower()
+    usable_sentences = [
+        sentence
+        for sentence in sentences
+        if len(sentence.split()) > 6
+        and len(sentence.split()) < 40
+        and "include" not in sentence.lower()
+        and "printf" not in sentence.lower()
+        and "void" not in sentence.lower()
+        and "main" not in sentence.lower()
     ]
 
-    # Shuffle the source material so repeated submissions do not always select
-    # the same sentences and keywords in the same order.
-    random.shuffle(sentences)
-    keywords = list(keywords)
-    random.shuffle(keywords)
+    random.shuffle(usable_sentences)
+    shuffled_keywords = list(keywords)
+    random.shuffle(shuffled_keywords)
 
     candidates = []
     seen_questions = set()
-    for sentence in sentences:
-        for keyword in keywords:
-            if keyword.lower() in sentence.lower():
-                question = sentence.replace(keyword, "_____")
-                if question in seen_questions:
-                    continue
-                seen_questions.add(question)
 
-                distractors = [k for k in keywords if k != keyword]
-                random.shuffle(distractors)
-                options = [keyword]
-                options += distractors[:3]
-                while len(options) < 4:
-                    options.append("None of the above")
-                random.shuffle(options)
-                answer_index = options.index(keyword)
+    for sentence in usable_sentences:
+        for keyword in shuffled_keywords:
+            if keyword.lower() not in sentence.lower():
+                continue
 
-                candidates.append({
+            question = sentence.replace(keyword, "_____")
+            if question in seen_questions:
+                continue
+
+            seen_questions.add(question)
+            distractors = [
+                item for item in shuffled_keywords
+                if item.lower() != keyword.lower()
+            ]
+            random.shuffle(distractors)
+
+            options = [keyword, *distractors[:3]]
+            while len(options) < 4:
+                options.append("None of the above")
+
+            random.shuffle(options)
+            answer_index = options.index(keyword)
+
+            candidates.append(
+                {
                     "question": question,
                     "options": options,
                     "answer": keyword,
                     "answer_letter": "ABCD"[answer_index],
-                })
+                }
+            )
 
     random.shuffle(candidates)
 
-    # Prefer questions that were not shown by the immediately preceding
-    # submission. If the PDF has too few unique questions, fill the remainder.
     fresh_candidates = [
-        mcq for mcq in candidates
+        mcq
+        for mcq in candidates
         if mcq["question"] not in excluded_questions
     ]
     previous_candidates = [
-        mcq for mcq in candidates
+        mcq
+        for mcq in candidates
         if mcq["question"] in excluded_questions
     ]
 
-    return (fresh_candidates + previous_candidates)[:int(count)]
+    return (fresh_candidates + previous_candidates)[: int(count)]

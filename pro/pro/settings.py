@@ -117,12 +117,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-ALLOWED_HOSTS = [
-    "quizforge-ai-rzsz.onrender.com",
-    "localhost",
-    "127.0.0.1",
-]
-
+ALLOWED_HOSTS = ["ai-mcq-generator-s0jg.onrender.com"]
 CSRF_TRUSTED_ORIGINS = [
     "https://quizforge-ai-rzsz.onrender.com",
 ]
