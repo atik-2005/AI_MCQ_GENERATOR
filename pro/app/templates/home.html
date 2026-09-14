@@ -286,11 +286,11 @@
 
         <label>Number of MCQs</label>
         <select name="mcq_count">
-            <option>10</option>
-            <option>20</option>
-            <option>30</option>
-            <option>40</option>
-            <option>50</option>
+            <option value="10" {% if selected_count == "10" %}selected{% endif %}>10</option>
+            <option value="20" {% if selected_count == "20" %}selected{% endif %}>20</option>
+            <option value="30" {% if selected_count == "30" %}selected{% endif %}>30</option>
+            <option value="40" {% if selected_count == "40" %}selected{% endif %}>40</option>
+            <option value="50" {% if selected_count == "50" %}selected{% endif %}>50</option>
         </select>
 
         <button type="submit">Generate MCQs</button>
@@ -307,7 +307,7 @@
 
     {% if mcqs %}
         <hr>
-        <h2>Generated MCQs</h2>
+        <h2>Generated MCQs ({{ generated_count }})</h2>
 
         {% for mcq in mcqs %}
         <div class="mcq">

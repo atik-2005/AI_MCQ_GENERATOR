@@ -17,6 +17,7 @@ from app.ai_engine.preprocess import (
 def home(request):
     mcqs = []
     error = None
+    selected_count = request.POST.get("mcq_count", "10")
 
     if request.method == "POST":
         previous_mcqs = request.session.get("mcqs", [])
@@ -35,7 +36,7 @@ def home(request):
 
             pdf = request.FILES.get("pdf_file")
             difficulty = request.POST.get("difficulty", "Medium")
-            mcq_count = request.POST.get("mcq_count", "10")
+            mcq_count = selected_count
 
             if not pdf:
                 error = "Please upload a PDF file."
@@ -79,7 +80,16 @@ def home(request):
             request.session["mcqs"] = []
             request.session.modified = True
 
-    return render(request, "home.html", {"mcqs": mcqs, "error": error})
+    return render(
+        request,
+        "home.html",
+        {
+            "mcqs": mcqs,
+            "error": error,
+            "selected_count": selected_count,
+            "generated_count": len(mcqs),
+        },
+    )
 def download(request):
     mcqs = request.session.get("mcqs")
 
